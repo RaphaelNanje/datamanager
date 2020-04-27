@@ -42,7 +42,7 @@ class DataManager(UserDict):
         super().__init__(*args, **kwargs)
         self.logger = logging.getLogger(type(self).__name__)
         self.session_id = str(randint(100000, 999999))
-        self.save_daemon = SaveDaemon(self)
+        self.save_daemon = SaveDaemon()
         self.save_daemon.funcs.extend((self.save, self.save_caches))
 
     def register(self, name, data, display=False, append_session_id=True):
@@ -184,7 +184,7 @@ class DataManager(UserDict):
         elif isinstance(data, dict):
             self[name].update(loaded_data)
 
-    def get(self, k, optional=None):
+    def get(self, k, optional=None) -> Union[list, dict, set]:
         k = k + self.session_id
         if k in self.do_not_append_session_id:
             k = k.replace(self.session_id, '')
